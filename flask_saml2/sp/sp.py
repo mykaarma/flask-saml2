@@ -39,6 +39,7 @@ class ServiceProvider:
         auth_data: AuthData,
         relay_state: str,
     ) -> Response:
+        print("login successful")
         """ Called when a user is successfully logged on.
         Subclasses should override this if they want to do more
         with the returned user data.
@@ -248,8 +249,13 @@ class ServiceProvider:
             abort(redirect(self.get_login_url()))
 
     def is_user_logged_in(self) -> bool:
+
         """Check if the user is currently logged in / authenticated with an IdP.
         """
+        print("in is user logged in")
+        
+        if(self.session_auth_data_key in session):
+            print("sess auth data key",session[self.session_auth_data_key])
         return self.session_auth_data_key in session and \
             AuthData.is_valid(self, session[self.session_auth_data_key])
 
@@ -267,6 +273,7 @@ class ServiceProvider:
         return render_template(template, **context)
 
     def set_auth_data_in_session(self, auth_data: AuthData):
+        print("set suth data in sess")
         """Store authentication details from the :class:`IdPHandler`
         in the browser session.
         """
@@ -279,9 +286,11 @@ class ServiceProvider:
         session.pop(self.session_auth_data_key, None)
 
     def get_auth_data_in_session(self) -> AuthData:
+        print("in get auth data from ses")
         """Get an :class:`AuthData` instance from the session data stored
         for the currently logged in user.
         """
+        print("session[authdatakey]",session[self.session_auth_data_key])
         return AuthData.from_dict(self, session[self.session_auth_data_key])
 
     def make_absolute_url(self, url: str) -> str:
